@@ -12,8 +12,9 @@ helper n
   | (mod) n  2 == 1 = 1 : helper ((div)n  2)
   | (mod) n 2 == 0 = 0 : helper ((div) n  2)
 
-equalizeLen :: [Integer]  -> Int ->  [Integer]
 
+-- Função que adiciona zero no final da lista até atingir um resultado sastifatorio
+equalizeLen :: [Integer]  -> Int ->  [Integer]
 equalizeLen array len= if ((/=)(length array) len) then equalizeLen ([0]++array) len  else array 
 
 
