@@ -14,7 +14,6 @@ helper n
   | (mod) n  2 == 1 = 1 : helper ((div)n  2)
   | (mod) n 2 == 0 = 0 : helper ((div) n  2)
 
-
 -- Função que adiciona zero no final da lista até atingir um resultado sastifatorio
 equalizeLen :: [Integer]  -> Int ->  [Integer]
 equalizeLen array len= if ((/=)(length array) len) then equalizeLen ([0]++array) len  else array 
@@ -22,10 +21,8 @@ equalizeLen array len= if ((/=)(length array) len) then equalizeLen ([0]++array)
 isAtomic :: String -> Bool
 isAtomic attr = if (/= ) (length attr)  1 then False else True
 
-
 binToBool :: [Integer] -> Int -> Bool
 binToBool list pos = if (/=) (list !! pos) 1 then True else False
-
 
 solveAtomicExpress :: [String] ->  Bool
 solveAtomicExpress express = case (express !! 1) of
@@ -33,7 +30,6 @@ solveAtomicExpress express = case (express !! 1) of
     ("&") -> andAtomicExpress(express)
     ("|") -> orAtomicExpress(express)
   
-
 
 ifAtomicExpress :: [String] -> Bool
 ifAtomicExpress express = if ((express !! 0) == "1" && (express !! 2) == "0") then  False else  True
@@ -43,11 +39,16 @@ orAtomicExpress express = if ((express !! 0) == "1" || (express !! 2) == "1") th
 
 andAtomicExpress :: [String] -> Bool
 andAtomicExpress express = if ((express !! 0) == "1" && (express !! 2) == "1") then True else False
+
+
+-- identifyVariable :: String -> Integer -> [Char]
+-- identifyVariable express currentId=
+
 main = do
     -- print((split "oi gente") !! 0)
     --------------------------------------
     -- Bloco de Codigo de Teste
-    input <- getLine;
+    input <- getLine
 
     print(solveAtomicExpress(split(input)))
     putStr("oi")
