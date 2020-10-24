@@ -22,8 +22,9 @@ find_subformula exp id =
     -- no caso de ser uma negação de uma subformula atomica ou a propria subformula atomica
     else if exp !! id == 'V' then ("V", id)
     else if exp !! id == 'F' then ("F", id)
-    else if exp !! id == '~' && exp !! (id + 1) == 'V' then ("F", id)
-    else if exp !! id == '~' && exp !! (id + 1) == 'F' then ("V", id)
+    else if exp !! id == '~' then do
+        let (sentece, c) = find_subformula exp (id + 1)
+        if sentece == "V" then ("F", c) else ("V", c)
     else error "Formato da função não condiz com o esperado"
 
 -- auxilia a função acima
@@ -40,7 +41,22 @@ operationController express = case (express !! 0) of
     ('|') -> do 
         let (first, id) = find_subformula express 1
         let (second, id2) = find_subformula express (id + 1)
-        ""
+        if (expressController first) == "F" && (expressController second) == "F" then "F"
+        else "V"
+    ('&') -> do
+        let (first, id) = find_subformula express 1
+        let (second, id2) = find_subformula express (id + 1)
+        if (expressController first) == "V" && (expressController second) == "V" then "V"
+        else "F"
+    ('-') -> do
+        let (first, id) = find_subformula express 1
+        let (second, id2) = find_subformula express (id + 1)
+        if (expressController first) == "V" && (expressController second) == "F" then "F"
+        else "V"
+    ('(') -> expressController express
+    ('~') -> expressController express
+    ('V') -> "V"
+    ('F') -> "F"
     (_) -> error "Formato da equação não condiz com o esperado(2)"
 
 
