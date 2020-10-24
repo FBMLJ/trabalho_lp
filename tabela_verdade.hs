@@ -54,7 +54,9 @@ operationController express = case (express !! 0) of
         if (expressController first) == "V" && (expressController second) == "F" then "F"
         else "V"
     ('(') -> expressController express
-    ('~') -> expressController express
+    ('~') -> do
+        if expressController(slice 1 (length express ) express) == "V" then "F"
+        else "V"
     ('V') -> "V"
     ('F') -> "F"
     (_) -> error "Formato da equação não condiz com o esperado(2)"
