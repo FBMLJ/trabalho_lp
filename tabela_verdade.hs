@@ -1,3 +1,4 @@
+
 slice :: Int -> Int -> [b] -> [b]
 slice from to array = take (to - from + 1) (drop from array)
 
@@ -19,7 +20,11 @@ find_subformula exp id =
         let var = (find_subformula_aux exp (id + 1) 1)
         (slice id var exp, var)
     -- no caso de ser uma negação de uma subformula atomica ou a propria subformula atomica
-    else (" ", 1)
+    else if exp !! id == 'V' then ("V", id)
+    else if exp !! id == 'F' then ("F", id)
+    else if exp !! id == '~' && exp !! (id + 1) == 'V' then ("F", id)
+    else if exp !! id == '~' && exp !! (id + 1) == 'F' then ("V", id)
+    else error "Formato da função não condiz com o esperado"
 
 -- auxilia a função acima
 find_subformula_aux :: String -> Int -> Int -> Int
@@ -30,22 +35,26 @@ find_subformula_aux exp current parenteses = if parenteses == 0 then (current - 
 
 
 -- verifica o operador que será utilizado para resolver a formula
-operationController :: String -> [String]
+operationController :: String -> String
 operationController express = case (express !! 0) of
     ('|') -> do 
         let (first, id) = find_subformula express 1
         let (second, id2) = find_subformula express (id + 1)
-        [first, second]
+        ""
     (_) -> error "Formato da equação não condiz com o esperado(2)"
 
 
 
 -- verifica a integridade da formula ou subformula e retorna erro se não estiver de acordo com a sintaxe
-expressController :: String -> [String]
-expressController attr = if (attr !! 0) == '(' && (attr !! (length attr -1)) == ')' then operationController(slice 1 (length attr -2) attr) else error "Formato da equação não condiz com o esperado(1)"
+expressController :: String -> String
+expressController attr = if length attr < 3 then do
+        let (exp, id) = find_subformula attr 0
+        exp
+
+    else if (attr !! 0) == '(' && (attr !! (length attr -1)) == ')' then operationController(slice 1 (length attr -2) attr) else error "Formato da equação não condiz com o esperado(1)"
 
 main = do
     input <- getLine
     
-    let response= expressController input
+    let response= expressController input 
     print(response) 
