@@ -55,7 +55,7 @@ operationController express = case (express !! 0) of
         else "V"
     ('(') -> expressController express
     ('~') -> do
-        if expressController(slice 1 (length express ) express) == "V" then "F"
+        if expressController(slice 1 (length express -1 ) express) == "V" then "F"
         else "V"
     ('V') -> "V"
     ('F') -> "F"
@@ -74,5 +74,5 @@ expressController attr = if length attr < 3 then do
 main = do
     input <- getLine
     
-    let response= expressController input 
+    let response= slice 1 (length input) input 
     print(response) 
