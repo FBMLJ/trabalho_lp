@@ -2,7 +2,6 @@
 slice :: Int -> Int -> [b] -> [b]
 slice from to array = take (to - from + 1) (drop from array)
 
-
 -- função responsavel para separa as subformulas do resto da formula
 find_subformula :: String -> Int -> (String, Int)
 find_subformula exp id = 
@@ -26,7 +25,6 @@ find_subformula_aux exp current parenteses = if parenteses == 0 then (current - 
     else if exp !! current == '('  then find_subformula_aux exp (current + 1) (parenteses + 1) 
     else if exp !! current == ')' then find_subformula_aux exp (current + 1) (parenteses - 1)
     else find_subformula_aux exp (current + 1) parenteses
-
 
 -- verifica o operador que será utilizado para resolver a formula
 operationController :: String -> String
@@ -60,9 +58,6 @@ operationController express = case (express !! 0) of
     ('F') -> "F"
     -- erro caso encontre um caracter diferente do esperado
     (_) -> error "Formato da equação não condiz com o esperado(2)"
-
-
-
 -- verifica a integridade da formula ou subformula e retorna erro se não estiver de acordo com a sintaxe
 expressController :: String -> String
 expressController attr = if length attr < 3 then do
@@ -70,9 +65,7 @@ expressController attr = if length attr < 3 then do
         exp
 
     else if (attr !! 0) == '(' && (attr !! (length attr -1)) == ')' then operationController(slice 1 (length attr -2) attr) else error "Formato da equação não condiz com o esperado(1)"
-
 main = do
     input <- getLine
-    
     let response= expressController input 
     print(response) 
