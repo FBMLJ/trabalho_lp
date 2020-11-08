@@ -20,7 +20,7 @@ find_subformula exp id =
         if sentece == "V" then ("F", c) else ("V", c)
     else error "Formato da função não condiz com o esperado"
 
--- auxilia a função acima
+-- auxilia a função acima a encontra a o fechamento do parentese
 find_subformula_aux :: String -> Int -> Int -> Int
 find_subformula_aux exp current parenteses = if parenteses == 0 then (current - 1) 
     else if exp !! current == '('  then find_subformula_aux exp (current + 1) (parenteses + 1) 
