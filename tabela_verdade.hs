@@ -1,7 +1,12 @@
+-- remover duplicatas na lista
+removeDuplicate :: Eq a => [a] -> [a]
+removeDuplicate [] = []
+removeDuplicate (i : lista)
+  | i `elem` lista = removeDuplicate lista
+  | otherwise = i : removeDuplicate lista
 
-slice :: Int -> Int -> [b] -> [b]
-slice from to array = take (to - from + 1) (drop from array)
-
+substring :: Int -> Int -> [b] -> [b]
+substring from to array = take (to - from + 1) (drop from array)
 -- função responsavel para separa as subformulas do resto da formula
 find_subformula :: String -> Int -> (String, Int)
 find_subformula exp id = 
@@ -10,7 +15,7 @@ find_subformula exp id =
     -- encontra subformulas que estão dentro de parenteses
     else if (exp !! id) == '(' then do
         let var = (find_subformula_aux exp (id + 1) 1)
-        (slice id var exp, var)
+        (substring id var exp, var)
     -- no caso de ser uma negação de uma subformula atomica ou a propria subformula atomica
     else if exp !! id == 'V' then ("V", id)
     else if exp !! id == 'F' then ("F", id)
@@ -51,7 +56,7 @@ operationController express = case (express !! 0) of
     ('(') -> expressController express
     -- codigo referente a negação
     ('~') -> do
-        if expressController(slice 1 (length express -1 ) express) == "V" then "F"
+        if expressController(substring 1 (length express -1 ) express) == "V" then "F"
         else "V"
     -- codigo referente a expressao apolar
     ('V') -> "V"
@@ -64,7 +69,7 @@ expressController attr = if length attr < 3 then do
         let (exp, id) = find_subformula attr 0
         exp
 
-    else if (attr !! 0) == '(' && (attr !! (length attr -1)) == ')' then operationController(slice 1 (length attr -2) attr) else error "Formato da equação não condiz com o esperado(1)"
+    else if (attr !! 0) == '(' && (attr !! (length attr -1)) == ')' then operationController(substring 1 (length attr -2) attr) else error "Formato da equação não condiz com o esperado(1)"
 main = do
     input <- getLine
     let response= expressController input 
