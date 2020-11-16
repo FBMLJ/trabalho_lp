@@ -1,12 +1,58 @@
+
+substring :: Int -> Int -> [b] -> [b]
+substring from to array = take (to - from + 1) (drop from array)
+
+--Tratamento de entrada
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+caracterInvalid = ['>',' ', '(', ')','|','~','&']
+-- pegar os caracteres validos para serem variavel
+getAllVariable :: String -> Int-> String
+getAllVariable string id =  
+    if id == length string then "" else
+    if string !! id `elem` caracterInvalid then getAllVariable string (id+1)
+    else [(string !! id)] ++ getAllVariable string (id+1)
 -- remover duplicatas na lista
 removeDuplicate :: Eq a => [a] -> [a]
 removeDuplicate [] = []
 removeDuplicate (i : lista)
   | i `elem` lista = removeDuplicate lista
   | otherwise = i : removeDuplicate lista
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
 
-substring :: Int -> Int -> [b] -> [b]
-substring from to array = take (to - from + 1) (drop from array)
+
+
+
+----Execução Tabela Verdade
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+toBinary 0 = [0]
+toBinary n = reverse (binaryHelper n)
+binaryHelper 0 = []
+binaryHelper n
+  | (mod) n 2 == 1 = 1 : binaryHelper ((div) n 2)
+  | (mod) n 2 == 0 = 0 : binaryHelper ((div) n 2)
+
+equalizeLen :: [Integer] -> Int -> [Integer]
+equalizeLen array len = if ((/=) (length array) len) then equalizeLen ([0] ++ array) len else array
+
+
+
+
+
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+
+
+---Compilar uma expressão
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
 -- função responsavel para separa as subformulas do resto da formula
 find_subformula :: String -> Int -> (String, Int)
 find_subformula exp id = 
@@ -23,7 +69,6 @@ find_subformula exp id =
         let (sentece, c) = find_subformula exp (id + 1)
         if sentece == "V" then ("F", c) else ("V", c)
     else error "Formato da função não condiz com o esperado"
-
 -- auxilia a função acima a encontra a o fechamento do parentese
 find_subformula_aux :: String -> Int -> Int -> Int
 find_subformula_aux exp current parenteses = if parenteses == 0 then (current - 1) 
@@ -68,9 +113,16 @@ expressController :: String -> String
 expressController attr = if length attr < 3 then do
         let (exp, id) = find_subformula attr 0
         exp
-
     else if (attr !! 0) == '(' && (attr !! (length attr -1)) == ')' then operationController(substring 1 (length attr -2) attr) else error "Formato da equação não condiz com o esperado(1)"
+
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+
 main = do
     input <- getLine
-    let response= expressController input 
-    print(response) 
+    let variable = removeDuplicate (getAllVariable input 0)
+    let currentNumber = 0
+    let maxNumber = 2 ^ (length variable)
+    -- let response= expressController input 
+    -- print(response) 
