@@ -2,11 +2,13 @@
 substring :: Int -> Int -> [b] -> [b]
 substring from to array = take (to - from + 1) (drop from array)
 
+replace id elem = map (\(id', elem') -> if id' == id then elem else elem') . zip [0 ..]
+
 --Tratamento de entrada
 --------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------
-caracterInvalid = ['>',' ', '(', ')','|','~','&']
+caracterInvalid = ['>',' ', '(', ')','|','~','&','-']
 -- pegar os caracteres validos para serem variavel
 getAllVariable :: String -> Int-> String
 getAllVariable string id =  
@@ -19,6 +21,24 @@ removeDuplicate [] = []
 removeDuplicate (i : lista)
   | i `elem` lista = removeDuplicate lista
   | otherwise = i : removeDuplicate lista
+
+
+changeVariable :: String -> String -> Int->String ->  (String)
+changeVariable variavel valores variavelAtual expressao  =
+    if variavelAtual == length variavel then expressao
+    else do 
+    changeVariableAx (variavel !! variavelAtual) (valores !! variavelAtual) expressao 0
+    changeVariable variavel valores  (variavelAtual+1) expressao
+
+changeVariableAx :: Char -> Char -> String -> Int -> String
+changeVariableAx variavel valor express idice =
+    if idice == (length express) then express
+    else if express !! idice == variavel then do 
+        replace idice valor express
+        changeVariableAx variavel valor express (idice+1)
+
+    else changeVariableAx variavel valor express (idice+1)
+    
 --------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------
@@ -39,6 +59,12 @@ binaryHelper n
 
 equalizeLen :: [Integer] -> Int -> [Integer]
 equalizeLen array len = if ((/=) (length array) len) then equalizeLen ([0] ++ array) len else array
+
+
+tabelaVerdade :: [String] -> String-> Int -> Int -> String
+tabelaVerdade formulas variaveis currentId maxId = do
+    "oi"
+    
 
 
 
@@ -124,5 +150,15 @@ main = do
     let variable = removeDuplicate (getAllVariable input 0)
     let currentNumber = 0
     let maxNumber = 2 ^ (length variable)
+
+
+
+
+
+    print('-')
+
+
+
+
     -- let response= expressController input 
     -- print(response) 
