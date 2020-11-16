@@ -26,16 +26,14 @@ removeDuplicate (i : lista)
 changeVariable :: String -> String -> Int->String ->  (String)
 changeVariable variavel valores variavelAtual expressao  =
     if variavelAtual == length variavel then expressao
-    else do 
-    changeVariableAx (variavel !! variavelAtual) (valores !! variavelAtual) expressao 0
-    changeVariable variavel valores  (variavelAtual+1) expressao
+    else  
+    changeVariable variavel valores (variavelAtual + 1) (changeVariableAx (variavel !! variavelAtual) (valores !! variavelAtual) expressao 0)
 
 changeVariableAx :: Char -> Char -> String -> Int -> String
 changeVariableAx variavel valor express idice =
     if idice == (length express) then express
-    else if express !! idice == variavel then do 
-        replace idice valor express
-        changeVariableAx variavel valor express (idice+1)
+    else if express !! idice == variavel then 
+        changeVariableAx variavel valor (replace idice valor express) (idice+1)
 
     else changeVariableAx variavel valor express (idice+1)
     
@@ -150,7 +148,9 @@ main = do
     let variable = removeDuplicate (getAllVariable input 0)
     let currentNumber = 0
     let maxNumber = 2 ^ (length variable)
-
+    let i = changeVariable "abc" "VFV"  0 input
+    print(i)
+    print(expressController i)
 
 
 
