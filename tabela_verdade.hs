@@ -2,7 +2,8 @@
 substring :: Int -> Int -> [b] -> [b]
 substring from to array = take (to - from + 1) (drop from array)
 
-replace id elem = map (\(id', elem') -> if id' == id then elem else elem') . zip [0 ..]
+
+replace position newVal list = take position list ++ newVal : drop (position + 1) list
 
 --Tratamento de entrada
 --------------------------------------------------------------------------------------
@@ -57,6 +58,10 @@ binaryHelper n
 
 equalizeLen :: [Integer] -> Int -> [Integer]
 equalizeLen array len = if ((/=) (length array) len) then equalizeLen ([0] ++ array) len else array
+
+turnTrueFalse :: [Int] -> Int -> String -> String
+turnTrueFalse array id new= if length array == id then new else if array !! id == 0 
+    then turnTrueFalse array (id+1) (new ++ "V") else  turnTrueFalse array (id+1) (new ++ "F")
 
 
 tabelaVerdade :: [String] -> String-> Int -> Int -> String
@@ -148,9 +153,11 @@ main = do
     let variable = removeDuplicate (getAllVariable input 0)
     let currentNumber = 0
     let maxNumber = 2 ^ (length variable)
+    
     let i = changeVariable "abc" "VFV"  0 input
     print(i)
     print(expressController i)
+    print(turnTrueFalse (toBinary maxNumber) 0 "")
 
 
 
