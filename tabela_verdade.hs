@@ -43,12 +43,32 @@ changeVariableAx variavel valor express idice =
 --------------------------------------------------------------------------------------
 
 
+----Encontrando Subformula
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+
+
+
+
+-- expressControllerExpress :: String -> [String]
+-- expressControllerExpress attr =
+--   if length attr < 3
+--     then [attr]
+--     else if (attr !! 0) == '(' && (attr !! (length attr -1)) == ')' then operationControllerExpress (substring 1 (length attr -2) attr) else error "Formato da equação não condiz com o esperado(1)"
+
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+
+
 
 
 ----Execução Tabela Verdade
 --------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------
+toBinary :: (Num a2, Integral a1) => a1 -> [a2]
 toBinary 0 = [0]
 toBinary n = reverse (binaryHelper n)
 binaryHelper 0 = []
@@ -151,10 +171,13 @@ expressController attr = if length attr < 3 then do
 main = do
     input <- getLine
     let variable = removeDuplicate (getAllVariable input 0)
+    print(variable)
     let currentNumber = 0
-    let maxNumber = 2 ^ (length variable)
-    
-    let i = changeVariable "abc" "VFV"  0 input
+    let maxNumber = 2 ^ (length variable) -1
+    let j = [0]
+    let variableValue = turnTrueFalse (toBinary( maxNumber)) 0 ""
+    print(variableValue)
+    let i = changeVariable variable variableValue  0 input
     print(i)
     print(expressController i)
     print(turnTrueFalse (toBinary maxNumber) 0 "")
