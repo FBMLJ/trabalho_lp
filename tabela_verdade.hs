@@ -60,7 +60,16 @@ find_subformulaExpress exp id =
           let var = (find_subformula_auxExpress exp (id + 1) 1)
           (expressControllerExpress (substring id var exp), var)
        
-        else ([[exp !! id]], (id+1))
+        else 
+          if (exp !! id) == '~' then 
+            if (exp !! (id+1)) == '(' then  do 
+              let var = (find_subformula_auxExpress exp (id + 2) 1) 
+              (expressControllerExpress (substring id var exp), var)
+            else ([[exp !! id ,exp !! (id +1)]], (id+1))
+            
+          else ([[exp !! id]], (id+1))
+
+
 -- auxilia a função acima a encontra a o fechamento do parentese
 find_subformula_auxExpress :: String -> Int -> Int -> Int
 find_subformula_auxExpress exp current parenteses =
@@ -91,6 +100,11 @@ operationControllerExpress express = case (express !! 0) of
     let (second, id2) = find_subformulaExpress express (id + 1)
     first ++ second ++ [substring 1 id express] ++ [substring (id+1) id2 express]
   ('(') -> expressControllerExpress express
+  ('~') -> do  
+    let (first, id) = find_subformulaExpress express 1
+    first ++ [substring 0 id express]
+
+    
   (_) -> [express]
     
 --   ('&') -> do
