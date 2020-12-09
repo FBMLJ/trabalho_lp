@@ -48,14 +48,84 @@ changeVariableAx variavel valor express idice =
 --------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------
 
+find_subformulaExpress :: String -> Int -> ([String], Int)
+find_subformulaExpress exp id =
+  -- fica pulando para o proximo id até encontrar um caracter valido
+  if (exp !! id) == ' ' || (exp !! id) == '>' || (exp !! id) == '~' 
+    then find_subformulaExpress exp (id + 1)
+    else -- encontra subformulas que estão dentro de parenteses
+
+      if (exp !! id) == '('
+        then do
+          let var = (find_subformula_auxExpress exp (id + 1) 1)
+          (expressControllerExpress (substring id var exp), var)
+       
+        else ([[exp !! id]], (id+1))
+-- auxilia a função acima a encontra a o fechamento do parentese
+find_subformula_auxExpress :: String -> Int -> Int -> Int
+find_subformula_auxExpress exp current parenteses =
+  if parenteses == 0
+    then (current - 1)
+    else
+      if exp !! current == '('
+        then find_subformula_auxExpress exp (current + 1) (parenteses + 1)
+        else
+          if exp !! current == ')'
+            then find_subformula_auxExpress exp (current + 1) (parenteses - 1)
+            else find_subformula_auxExpress exp (current + 1) parenteses
 
 
+operationControllerExpress :: String -> [String]
+operationControllerExpress express = case (express !! 0) of
+  -- codigo referente ao or
+  ('|') -> do
+    let (first, id) = find_subformulaExpress express 1
+    let (second, id2) = find_subformulaExpress express (id + 1)
+    first ++ second ++ [substring 1 id express] ++ [substring (id+1) id2 express]
+  ('&') -> do
+    let (first, id) = find_subformulaExpress express 1
+    let (second, id2) = find_subformulaExpress express (id + 1)
+    first ++ second ++ [substring 1 id express] ++ [substring (id+1) id2 express]
+  ('-') -> do
+    let (first, id) = find_subformulaExpress express 1
+    let (second, id2) = find_subformulaExpress express (id + 1)
+    first ++ second ++ [substring 1 id express] ++ [substring (id+1) id2 express]
+  ('(') -> expressControllerExpress express
+  (_) -> [express]
+    
+--   ('&') -> do
+--     let (first, id) = find_subformulaExpress express 1
+--     let (second, id2) = find_subformulaExpress express (id + 1)
+--     if (expressControllerExpress first) == "V" && (expressControllerExpress second) == "V"
+--       then "V"
+--       else "F"
+--   -- codigo referente ao se
+--   ('-') -> do
+--     let (first, id) = find_subformulaExpress express 1
+--     let (second, id2) = find_subformulaExpress express (id + 1)
+--     if (expressControllerExpress first) == "V" && (expressControllerExpress second) == "F"
+--       then "F"
+--       else "V"
+--   -- codigo para permitir tratar parentes desnecessarios
+--   ('(') -> expressControllerExpress express
+--   -- codigo referente a negação
+--   ('~') -> do
+--     if expressControllerExpress (substring 1 (length express -1) express) == "V"
+--       then "F"
+--       else "V"
+--   -- codigo referente a expressao apolar
+--   ('V') -> "V"
+--   ('F') -> "F"
+--   -- erro caso encontre um caracter diferente do esperado
+--   (_) -> error "Formato da equação não condiz com o esperado(2)"
 
--- expressControllerExpress :: String -> [String]
--- expressControllerExpress attr =
---   if length attr < 3
---     then [attr]
---     else if (attr !! 0) == '(' && (attr !! (length attr -1)) == ')' then operationControllerExpress (substring 1 (length attr -2) attr) else error "Formato da equação não condiz com o esperado(1)"
+-- verifica a integridade da formula ou subformula e retorna erro se não estiver de acordo com a sintaxe
+
+expressControllerExpress :: String -> [String]
+expressControllerExpress attr =
+  if length attr < 3
+    then [attr]
+    else if (attr !! 0) == '(' && (attr !! (length attr -1)) == ')' then operationControllerExpress (substring 1 (length attr -2) attr) else error "Formato da equação não condiz com o esperado(1)"
 
 --------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------
@@ -170,17 +240,18 @@ expressController attr = if length attr < 3 then do
 
 main = do
     input <- getLine
-    let variable = removeDuplicate (getAllVariable input 0)
-    print(variable)
-    let currentNumber = 0
-    let maxNumber = 2 ^ (length variable) -1
-    let j = [0]
-    let variableValue = turnTrueFalse (toBinary( maxNumber)) 0 ""
-    print(variableValue)
-    let i = changeVariable variable variableValue  0 input
-    print(i)
-    print(expressController i)
-    print(turnTrueFalse (toBinary maxNumber) 0 "")
+    print (removeDuplicate(expressControllerExpress input))
+    -- let variable = removeDuplicate (getAllVariable input 0)
+    -- print(variable)
+    -- let currentNumber = 0
+    -- let maxNumber = 2 ^ (length variable) -1
+    -- let j = [0]
+    -- let variableValue = turnTrueFalse (toBinary( maxNumber)) 0 ""
+    -- print(variableValue)
+    -- let i = changeVariable variable variableValue  0 input
+    -- print(i)
+    -- print(expressController i)
+    -- print(turnTrueFalse (toBinary maxNumber) 0 "")
 
 
 
