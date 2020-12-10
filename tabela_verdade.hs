@@ -107,33 +107,6 @@ operationControllerExpress express = case (express !! 0) of
 
     
   (_) -> [express]
-    
---   ('&') -> do
---     let (first, id) = find_subformulaExpress express 1
---     let (second, id2) = find_subformulaExpress express (id + 1)
---     if (expressControllerExpress first) == "V" && (expressControllerExpress second) == "V"
---       then "V"
---       else "F"
---   -- codigo referente ao se
---   ('-') -> do
---     let (first, id) = find_subformulaExpress express 1
---     let (second, id2) = find_subformulaExpress express (id + 1)
---     if (expressControllerExpress first) == "V" && (expressControllerExpress second) == "F"
---       then "F"
---       else "V"
---   -- codigo para permitir tratar parentes desnecessarios
---   ('(') -> expressControllerExpress express
---   -- codigo referente a negação
---   ('~') -> do
---     if expressControllerExpress (substring 1 (length express -1) express) == "V"
---       then "F"
---       else "V"
---   -- codigo referente a expressao apolar
---   ('V') -> "V"
---   ('F') -> "F"
---   -- erro caso encontre um caracter diferente do esperado
---   (_) -> error "Formato da equação não condiz com o esperado(2)"
-
 -- verifica a integridade da formula ou subformula e retorna erro se não estiver de acordo com a sintaxe
 
 expressControllerExpress :: String -> [String]
@@ -199,15 +172,9 @@ tabelaVerdadeAx formulas variaveis variavelValor currentId =
 
     
 
-
-
-
-
 --------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------
-
-
 ---Compilar uma expressão
 --------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------
@@ -277,7 +244,6 @@ expressController attr = if length attr < 3 then do
 --------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------
-
 printCabecalho subform id = do
   if id < (length subform) then do
     if id == 0 then putStr("") else putStr("|")
@@ -290,41 +256,9 @@ printCabecalho subform id = do
 
 main = do
     input <- getLine
-    
-    
     let variable = removeDuplicate (getAllVariable input 0)
     let currentNumber = 0
     let maxNumber = 2 ^ (length variable) -1
     let subform = removeDuplicate((expressControllerExpress input)++ [input])
-    -- print(subform)
-    -- print(expressController input)
     printCabecalho subform 0
     tabelaVerdade subform variable currentNumber maxNumber
-    
-    --print uteis
-    -- print(variable)
-    -- print(maxNumber)
-
-    -- print(subform)
-
-    
-    
-    
-    -- print(variable)
-    -- let variableValue = turnTrueFalse (toBinary( maxNumber)) 0 ""
-    -- print(variableValue)
-    -- let i = changeVariable variable variableValue  0 input
-    -- print(i)
-    -- print(expressController i)
-    -- print(turnTrueFalse (toBinary maxNumber) 0 "")
-
-
-
-
-    print('-')
-
-
-
-
-    -- let response= expressController input 
-    -- print(response) 
