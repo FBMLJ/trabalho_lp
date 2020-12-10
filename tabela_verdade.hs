@@ -254,6 +254,23 @@ printCabecalho subform id = do
 
   else putStr("\n\n")
 
+analiseFormula :: String -> String -> Int -> Int -> Int-> IO()
+analiseFormula formula variavel currentId maxId trueContador= do
+  if currentId <= maxId
+    then do
+      print(trueContador)
+      let variavelValor = turnTrueFalse (equalizeLen (toBinary(currentId)) (length variavel)) 0 ""
+
+      let processForm = changeVariable variavel variavelValor 0 formula
+
+      if (expressController (processForm)) == "V" then analiseFormula formula variavel (currentId+1) maxId (trueContador+1)
+      else analiseFormula formula variavel (currentId+1) maxId trueContador
+      
+      
+  else if trueContador == (maxId+1) then putStrLn("\nEssa formula é uma tautologia") 
+  else if trueContador == 0 then putStrLn("\nEssa formula é insatisfatível")
+  else putStrLn("\nEssa formula é satisfatível")
+
 main = do
     input <- getLine
     let variable = removeDuplicate (getAllVariable input 0)
@@ -262,3 +279,4 @@ main = do
     let subform = removeDuplicate((expressControllerExpress input)++ [input])
     printCabecalho subform 0
     tabelaVerdade subform variable currentNumber maxNumber
+    analiseFormula input variable 0 maxNumber 0
