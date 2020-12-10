@@ -278,6 +278,16 @@ expressController attr = if length attr < 3 then do
 --------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------
 
+printCabecalho subform id = do
+  if id < (length subform) then do
+    if id == 0 then putStr("") else putStr("|")
+    putStr("\t")
+    putStr(subform !! id)
+    putStr ("\t")
+    printCabecalho subform (id+1)
+
+  else putStr("\n\n")
+
 main = do
     input <- getLine
     
@@ -288,6 +298,7 @@ main = do
     let subform = removeDuplicate((expressControllerExpress input)++ [input])
     -- print(subform)
     -- print(expressController input)
+    printCabecalho subform 0
     tabelaVerdade subform variable currentNumber maxNumber
     
     --print uteis
