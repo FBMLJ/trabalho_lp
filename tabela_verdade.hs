@@ -142,7 +142,7 @@ tabelaVerdade formulas variaveis currentId maxId = do
     putStr("\n")
     tabelaVerdade formulas variaveis (currentId+1) maxId
 
-  else putStr("\n\n\n\nFim")
+  else putStr("\n")
 
 --codigo auxiliar para execução do loop da tabela verdade(por coluna)
 tabelaVerdadeAx :: [String] -> String -> String -> Int-> IO()
@@ -264,6 +264,7 @@ analiseFormula formula variavel currentId maxId trueContador= do
   else putStrLn("\nEssa formula é satisfatível")
 
 main = do
+    putStrLn("Digite a formula")
     input <- getLine
     let variable = removeDuplicate (getAllVariable input 0)
     let currentNumber = 0

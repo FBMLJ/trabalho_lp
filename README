@@ -1,0 +1,43 @@
+
+Para execução do codigo é necessario rodar o comando abaixo
+
+    - runhaskell tabela_verdade.hs
+
+sobre a sintaxa do entrada
+
+    -variaveis podem ser qualquer simbolo diferente dos a seguir 
+    ['>',' ', '(', ')','|','~','&','-']
+
+    -É necessário colocar espaço entre os operadores binarios e entre os operandos
+    ex: (| a b)
+
+    -Entre um operador unario e seu operando não deve haver espaço
+    ex ~a 
+
+    -Qualquer operação binaria precisa estar dentro de parentes
+
+    -A entrada é feita com notação prefixada
+
+    -Operadores binarios: |(ou), &(e), (->)se
+
+    -Operadores unarios: ~(não)
+
+
+Exemplo de entradas possiveis:
+
+tautologia
+    -(| a ~a)
+    -(-> b (| a b))
+    -(|a (& ~a (| b ~a)))
+satisfatível
+    -(-> ~b (| a b))
+    -(a)
+    -(-> ~b (-> a c))
+    -(| a (-> b (& c d)))
+
+insatisfatível
+    -(& a ~a)
+    -(& ~b (& a b))
+    
+
+
