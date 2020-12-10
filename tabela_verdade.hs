@@ -23,7 +23,7 @@ removeDuplicate (i : lista)
   | i `elem` lista = removeDuplicate lista
   | otherwise = i : removeDuplicate lista
 
-
+-- trocar valor das variavel de uma dada formula
 changeVariable :: String -> String -> Int->String ->  (String)
 changeVariable variavel valores variavelAtual expressao  =
     if variavelAtual == length variavel then expressao
@@ -57,41 +57,29 @@ find_subformulaExpress exp id =
 
       if (exp !! id) == '('
         then do
-          let var = (find_subformula_auxExpress exp (id + 1) 1)
+          let var = (find_subformula_aux exp (id + 1) 1)
           (expressControllerExpress (substring id var exp), var)
        
         else 
           if (exp !! id) == '~' then 
             if (exp !! (id+1)) == '(' then  do 
-              let var = (find_subformula_auxExpress exp (id + 2) 1) 
+              let var = (find_subformula_aux exp (id + 2) 1) 
               (expressControllerExpress (substring id var exp), var)
             else ([[exp !! id ,exp !! (id +1)]], (id+1))
             
           else ([[exp !! id]], (id+1))
 
 
--- auxilia a função acima a encontra a o fechamento do parentese
-find_subformula_auxExpress :: String -> Int -> Int -> Int
-find_subformula_auxExpress exp current parenteses =
-  if parenteses == 0
-    then (current - 1)
-    else
-      if exp !! current == '('
-        then find_subformula_auxExpress exp (current + 1) (parenteses + 1)
-        else
-          if exp !! current == ')'
-            then find_subformula_auxExpress exp (current + 1) (parenteses - 1)
-            else find_subformula_auxExpress exp (current + 1) parenteses
 
-
+--encontra as subformulas
 operationControllerExpress :: String -> [String]
 operationControllerExpress express = case (express !! 0) of
-  -- codigo referente ao or
+  -- 
   ('|') -> do
     let (first, id) = find_subformulaExpress express 1
     let (second, id2) = find_subformulaExpress express (id + 1)
     
-    first ++ second ++ [filter (\xs -> (xs /= ' ')) (substring 1 id express)] ++ [filter (\xs -> (xs /= ' ')) (substring (id + 1) id2 express)]
+    first ++ second ++ [filter (\xs -> (xs /= ' ' )) (substring 1 id express)] ++ [filter (\xs -> (xs /= ' ')) (substring (id + 1) id2 express)]
   ('&') -> do
     let (first, id) = find_subformulaExpress express 1
     let (second, id2) = find_subformulaExpress express (id + 1)
@@ -99,7 +87,7 @@ operationControllerExpress express = case (express !! 0) of
   ('-') -> do
     let (first, id) = find_subformulaExpress express 1
     let (second, id2) = find_subformulaExpress express (id + 1)
-    first ++ second ++ [filter (\xs -> (xs /= ' ')) (substring 1 id express)] ++ [filter (\xs -> (xs /= ' ')) (substring (id+1) id2 express)]
+    first ++ second ++ [filter (\xs -> (xs /= ' '&& xs /= '>')) (substring 1 id express)] ++ [filter (\xs -> (xs /= ' ')) (substring (id+1) id2 express)]
   ('(') -> expressControllerExpress express
   ('~') -> do  
     let (first, id) = find_subformulaExpress express 1
@@ -126,6 +114,7 @@ expressControllerExpress attr =
 --------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------
+--codigo para transformar um numero em binario
 toBinary :: (Num a2, Integral a1) => a1 -> [a2]
 toBinary 0 = [0]
 toBinary n = reverse (binaryHelper n)
@@ -134,14 +123,16 @@ binaryHelper n
   | (mod) n 2 == 1 = 1 : binaryHelper ((div) n 2)
   | (mod) n 2 == 0 = 0 : binaryHelper ((div) n 2)
 
+-- transforma o length do array para o valor informado
 equalizeLen :: [Int] -> Int -> [Int]
 equalizeLen array len = if ((/=) (length array) len) then equalizeLen ([0] ++ array) len else array
 
+-- transforma o booleano em V e F
 turnTrueFalse :: [Int] -> Int -> String -> String
 turnTrueFalse array id new= if length array == id then new else if array !! id == 0 
     then turnTrueFalse array (id+1) (new ++ "V") else  turnTrueFalse array (id+1) (new ++ "F")
 
-
+--codigo execução para tabela verdade (linha)
 tabelaVerdade :: [String] -> String-> Int -> Int -> IO()
 tabelaVerdade formulas variaveis currentId maxId = do
   if currentId <= maxId then do
@@ -153,7 +144,7 @@ tabelaVerdade formulas variaveis currentId maxId = do
 
   else putStr("\n\n\n\nFim")
 
-
+--codigo auxiliar para execução do loop da tabela verdade(por coluna)
 tabelaVerdadeAx :: [String] -> String -> String -> Int-> IO()
 tabelaVerdadeAx formulas variaveis variavelValor currentId =
   if currentId < length formulas 
@@ -244,6 +235,7 @@ expressController attr = if length attr < 3 then do
 --------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------
+--codigo necessario para printar subformulas
 printCabecalho subform id = do
   if id < (length subform) then do
     if id == 0 then putStr("") else putStr("|")
@@ -254,11 +246,11 @@ printCabecalho subform id = do
 
   else putStr("\n\n")
 
+-- codigo para indentificar se a formlua é tautologia, insatisfatível ou satisfatível
 analiseFormula :: String -> String -> Int -> Int -> Int-> IO()
 analiseFormula formula variavel currentId maxId trueContador= do
   if currentId <= maxId
     then do
-      print(trueContador)
       let variavelValor = turnTrueFalse (equalizeLen (toBinary(currentId)) (length variavel)) 0 ""
 
       let processForm = changeVariable variavel variavelValor 0 formula
