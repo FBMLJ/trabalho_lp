@@ -90,19 +90,20 @@ operationControllerExpress express = case (express !! 0) of
   ('|') -> do
     let (first, id) = find_subformulaExpress express 1
     let (second, id2) = find_subformulaExpress express (id + 1)
-    first ++ second ++ [substring 1 id express] ++ [substring (id+1) id2 express]
+    
+    first ++ second ++ [filter (\xs -> (xs /= ' ')) (substring 1 id express)] ++ [filter (\xs -> (xs /= ' ')) (substring (id + 1) id2 express)]
   ('&') -> do
     let (first, id) = find_subformulaExpress express 1
     let (second, id2) = find_subformulaExpress express (id + 1)
-    first ++ second ++ [substring 1 id express] ++ [substring (id+1) id2 express]
+    first ++ second ++ [filter (\xs -> (xs /= ' ')) (substring 1 id express)] ++ [filter (\xs -> (xs /= ' ')) (substring (id+1) id2 express)]
   ('-') -> do
     let (first, id) = find_subformulaExpress express 1
     let (second, id2) = find_subformulaExpress express (id + 1)
-    first ++ second ++ [substring 1 id express] ++ [substring (id+1) id2 express]
+    first ++ second ++ [filter (\xs -> (xs /= ' ')) (substring 1 id express)] ++ [filter (\xs -> (xs /= ' ')) (substring (id+1) id2 express)]
   ('(') -> expressControllerExpress express
   ('~') -> do  
     let (first, id) = find_subformulaExpress express 1
-    first ++ [substring 0 id express]
+    first ++ [filter (\xs -> (xs /= ' ')) (substring 0 id express)]
 
     
   (_) -> [express]
@@ -160,7 +161,7 @@ binaryHelper n
   | (mod) n 2 == 1 = 1 : binaryHelper ((div) n 2)
   | (mod) n 2 == 0 = 0 : binaryHelper ((div) n 2)
 
-equalizeLen :: [Integer] -> Int -> [Integer]
+equalizeLen :: [Int] -> Int -> [Int]
 equalizeLen array len = if ((/=) (length array) len) then equalizeLen ([0] ++ array) len else array
 
 turnTrueFalse :: [Int] -> Int -> String -> String
@@ -171,16 +172,31 @@ turnTrueFalse array id new= if length array == id then new else if array !! id =
 tabelaVerdade :: [String] -> String-> Int -> Int -> IO()
 tabelaVerdade formulas variaveis currentId maxId = do
   if currentId <= maxId then do
-    tabelaVerdadeAx formulas variaveis currentId 0
-    putStr("/n")
+    let variavelValor = turnTrueFalse (equalizeLen (toBinary(currentId)) (length variaveis)) 0 ""
+
+    tabelaVerdadeAx formulas variaveis variavelValor 0
+    putStr("\n")
     tabelaVerdade formulas variaveis (currentId+1) maxId
 
-  else print("Fim")
+  else putStr("\n\n\n\nFim")
 
 
-tabelaVerdadeAx :: [String] -> String -> Int -> Int-> IO()
-tabelaVerdadeAx formulas variaveis currentNumber currentId = do
-  print("o")
+tabelaVerdadeAx :: [String] -> String -> String -> Int-> IO()
+tabelaVerdadeAx formulas variaveis variavelValor currentId =
+  if currentId < length formulas 
+    then do
+          if currentId /= 0 then putStr("|") else putStr(" ")
+          putStr("\t")
+          let form = formulas !! currentId
+
+          let processForm = changeVariable variaveis variavelValor  0 form
+          
+
+          putStr (expressController (processForm))
+          putStr("\t")
+          tabelaVerdadeAx formulas variaveis variavelValor (currentId+1)
+  else putStr("")
+
     
 
 
@@ -264,10 +280,15 @@ expressController attr = if length attr < 3 then do
 
 main = do
     input <- getLine
+    
+    
     let variable = removeDuplicate (getAllVariable input 0)
     let currentNumber = 0
     let maxNumber = 2 ^ (length variable) -1
     let subform = removeDuplicate((expressControllerExpress input)++ [input])
+    -- print(subform)
+    -- print(expressController input)
+    tabelaVerdade subform variable currentNumber maxNumber
     
     --print uteis
     -- print(variable)
