@@ -168,9 +168,19 @@ turnTrueFalse array id new= if length array == id then new else if array !! id =
     then turnTrueFalse array (id+1) (new ++ "V") else  turnTrueFalse array (id+1) (new ++ "F")
 
 
-tabelaVerdade :: [String] -> String-> Int -> Int -> String
+tabelaVerdade :: [String] -> String-> Int -> Int -> IO()
 tabelaVerdade formulas variaveis currentId maxId = do
-    "oi"
+  if currentId <= maxId then do
+    tabelaVerdadeAx formulas variaveis currentId 0
+    putStr("/n")
+    tabelaVerdade formulas variaveis (currentId+1) maxId
+
+  else print("Fim")
+
+
+tabelaVerdadeAx :: [String] -> String -> Int -> Int-> IO()
+tabelaVerdadeAx formulas variaveis currentNumber currentId = do
+  print("o")
     
 
 
@@ -254,12 +264,21 @@ expressController attr = if length attr < 3 then do
 
 main = do
     input <- getLine
-    print (removeDuplicate(expressControllerExpress input))
-    -- let variable = removeDuplicate (getAllVariable input 0)
+    let variable = removeDuplicate (getAllVariable input 0)
+    let currentNumber = 0
+    let maxNumber = 2 ^ (length variable) -1
+    let subform = removeDuplicate((expressControllerExpress input)++ [input])
+    
+    --print uteis
     -- print(variable)
-    -- let currentNumber = 0
-    -- let maxNumber = 2 ^ (length variable) -1
-    -- let j = [0]
+    -- print(maxNumber)
+
+    -- print(subform)
+
+    
+    
+    
+    -- print(variable)
     -- let variableValue = turnTrueFalse (toBinary( maxNumber)) 0 ""
     -- print(variableValue)
     -- let i = changeVariable variable variableValue  0 input
