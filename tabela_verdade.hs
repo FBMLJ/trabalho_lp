@@ -99,7 +99,8 @@ operationControllerExpress express = case (express !! 0) of
 
 expressControllerExpress :: String -> [String]
 expressControllerExpress attr =
-  if length attr < 3
+  if attr !! 0 == '~' then expressControllerExpress(substring 1 (length attr -1) attr)
+  else if length attr < 3
     then [attr]
     else if (attr !! 0) == '(' && (attr !! (length attr -1)) == ')' then operationControllerExpress (substring 1 (length attr -2) attr) else error "Formato da equação não condiz com o esperado(1)"
 
