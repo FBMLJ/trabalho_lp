@@ -87,7 +87,7 @@ operationControllerExpress express = case (express !! 0) of
   ('-') -> do
     let (first, id) = find_subformulaExpress express 1
     let (second, id2) = find_subformulaExpress express (id + 1)
-    first ++ second ++ [filter (\xs -> (xs /= ' '&& xs /= '>')) (substring 1 id express)] ++ [filter (\xs -> (xs /= ' ')) (substring (id+1) id2 express)]
+    first ++ second ++ [filter (\xs -> (xs /= ' ')) (substring 2 id express)] ++ [filter (\xs -> (xs /= ' ')) (substring (id+1) id2 express)]
   ('(') -> expressControllerExpress express
   ('~') -> do  
     let (first, id) = find_subformulaExpress express 1
@@ -227,7 +227,10 @@ operationController express = case (express !! 0) of
     (_) -> error "Formato da equação não condiz com o esperado(2)"
 -- verifica a integridade da formula ou subformula e retorna erro se não estiver de acordo com a sintaxe
 expressController :: String -> String
-expressController attr = if length attr < 3 then do
+expressController attr = 
+  if attr !! 0 == '~' then if expressController(substring 1 (length attr -1) attr) == "V" then "F"
+  else "V"
+  else if length attr < 3 then do
         let (exp, id) = find_subformula attr 0
         exp
     else if (attr !! 0) == '(' && (attr !! (length attr -1)) == ')' then operationController(substring 1 (length attr -2) attr) else error "Formato da equação não condiz com o esperado(1)"
