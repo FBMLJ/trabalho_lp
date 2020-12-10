@@ -79,19 +79,19 @@ operationControllerExpress express = case (express !! 0) of
     let (first, id) = find_subformulaExpress express 1
     let (second, id2) = find_subformulaExpress express (id + 1)
     
-    first ++ second ++ [filter (\xs -> (xs /= ' ' )) (substring 1 id express)] ++ [filter (\xs -> (xs /= ' ')) (substring (id + 1) id2 express)]
+    first ++ second ++ [filter (\ls -> (ls /= ' ' )) (substring 1 id express)] ++ [filter (\ls -> (ls /= ' ')) (substring (id + 1) id2 express)]
   ('&') -> do
     let (first, id) = find_subformulaExpress express 1
     let (second, id2) = find_subformulaExpress express (id + 1)
-    first ++ second ++ [filter (\xs -> (xs /= ' ')) (substring 1 id express)] ++ [filter (\xs -> (xs /= ' ')) (substring (id+1) id2 express)]
+    first ++ second ++ [filter (\ls -> (ls /= ' ')) (substring 1 id express)] ++ [filter (\ls -> (ls /= ' ')) (substring (id+1) id2 express)]
   ('-') -> do
     let (first, id) = find_subformulaExpress express 1
     let (second, id2) = find_subformulaExpress express (id + 1)
-    first ++ second ++ [filter (\xs -> (xs /= ' ')) (substring 2 id express)] ++ [filter (\xs -> (xs /= ' ')) (substring (id+1) id2 express)]
+    first ++ second ++ [filter (\ls -> (ls /= ' ')) (substring 2 id express)] ++ [filter (\ls -> (ls /= ' ')) (substring (id+1) id2 express)]
   ('(') -> expressControllerExpress express
   ('~') -> do  
     let (first, id) = find_subformulaExpress express 1
-    first ++ [filter (\xs -> (xs /= ' ')) (substring 0 id express)]
+    first ++ [filter (\ls -> (ls /= ' ')) (substring 0 id express)]
 
     
   (_) -> [express]
