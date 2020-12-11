@@ -67,7 +67,7 @@ find_subformulaExpress exp id =
               (expressControllerExpress (substring id var exp), var)
             else ([[exp !! id ,exp !! (id +1)]], (id+1))
             
-          else ([[exp !! id]], (id+1))
+          else ([[exp !! id]], (id))
 
 
 
